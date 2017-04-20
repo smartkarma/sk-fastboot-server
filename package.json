@@ -1,0 +1,38 @@
+{
+  "name": "sk-public-server",
+  "version": "0.1.0",
+  "description": "Express server for Smartkarma public home page",
+  "license": "MIT",
+  "author": "",
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "repository": "https://github.com/smartkarma/sk-fastboot-server",
+  "main": "server.js",
+  "scripts": {
+    "lint": "node ./node_modules/eslint/bin/eslint server.js lib/**",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cluster": "^0.7.7",
+    "dotenv": "^4.0.0",
+    "fastboot-app-server": "smartkarma/fastboot-app-server#rooturl",
+    "fs": "^0.0.1-security",
+    "ncp": "^2.0.0",
+    "path": "^0.12.7",
+    "request": "^2.81.0",
+    "rimraf": "^2.6.1",
+    "targz": "^1.0.1",
+    "uuid": "^3.0.1"
+  },
+  "engines": {
+    "node": ">= 6"
+  },
+  "private": true,
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.1.3",
+    "eslint-plugin-import": "^2.2.0"
+  }
+}
