@@ -8,8 +8,8 @@ A short introduction of this app could easily go here.
 You will need the following things properly installed on your computer.
 
 * [Git](https://git-scm.com/)
+* [NVM](https://github.com/creationix/nvm) recommended to install Node
 * [Node.js](https://nodejs.org/) v6.x (or above)
-* [NVM](https://github.com/creationix/nvm) recommended
 * [Yarn](https://yarnpkg.com/en/)
 
 ## Installation
