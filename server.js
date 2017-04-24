@@ -8,21 +8,15 @@ const WebhookNotifier = require('./lib/webhook-notifier');
 
 const deployHookURL = process.env.DEPLOY_HOOK_URL;
 const rootURL = process.env.FASTBOOT_ROOT_URL;
+const fastbootDistPath = process.env.FASTBOOT_DIST;
 const fastbootPackageURL = process.env.FASTBOOT_PACKAGE_URL;
 const fastbootExtractionPath = process.env.FASTBOOT_EXTRACT_PATH;
 const staticDistPath = process.env.STATIC_DIST;
 const indexFile = path.join(staticDistPath, 'index.html');
 
-const downloader = new S3Downloader({
-  url: fastbootPackageURL,
-  destPath: fastbootExtractionPath,
-});
-
 const notifier = new WebhookNotifier();
 
-const server = new FastBootAppServer({
-  downloader,
-  notifier,
+const serverSettings = {
   rootURL,
   gzip: true,
 
@@ -33,6 +27,18 @@ const server = new FastBootAppServer({
       res.sendFile(indexFile, err => (err && next(err)));
     });
   },
-});
+};
 
+if (fastbootPackageURL && fastbootExtractionPath) {
+  const downloader = new S3Downloader({
+    url: fastbootPackageURL,
+    destPath: fastbootExtractionPath,
+  });
+
+  serverSettings.downloader = downloader;
+} else {
+  serverSettings.distPath = fastbootDistPath;
+}
+
+const server = new FastBootAppServer(serverSettings);
 server.start();
