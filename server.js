@@ -20,6 +20,18 @@ const serverSettings = {
   rootURL,
   gzip: true,
 
+  beforeMiddleware: (app) => {
+    if (rootURL && rootURL !== '/') {
+      const rootWithoutSlash = rootURL.slice(0, -1);
+      app.get(rootWithoutSlash, (req, res, next) => {
+        if (req.originalUrl === rootWithoutSlash) {
+          return res.redirect(302, rootURL);
+        }
+        return next();
+      });
+    }
+  },
+
   afterMiddleware: (app) => {
     app.post(deployHookURL, notifier.hook);
     app.use(express.static(staticDistPath));
