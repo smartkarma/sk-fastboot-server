@@ -18,6 +18,7 @@ const notifier = new WebhookNotifier();
 
 const serverSettings = {
   rootURL,
+  notifier,
   gzip: true,
 
   beforeMiddleware: (app) => {
