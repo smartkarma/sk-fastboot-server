@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const request = require('request');
 const FastBootAppServer = require('fastboot-app-server');
 const S3Downloader = require('./lib/s3-downloader');
 const WebhookNotifier = require('./lib/webhook-notifier');
@@ -54,4 +55,15 @@ if (fastbootPackageURL && fastbootExtractionPath) {
 }
 
 const server = new FastBootAppServer(serverSettings);
-server.start();
+const start = server.start();
+if (start) {
+  start.then(() => {
+    if (process.env.REPORT_HOOK_URL) {
+      request.post(process.env.REPORT_HOOK_URL, {
+        form: {
+          text: `*${process.env.SERVER_NAME}*: Server has started.`,
+        },
+      });
+    }
+  });
+}
