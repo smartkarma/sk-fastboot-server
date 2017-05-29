@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const request = require('request');
 const FastBootAppServer = require('fastboot-app-server');
@@ -23,6 +24,7 @@ const serverSettings = {
   gzip: true,
 
   beforeMiddleware: (app) => {
+    app.use(cookieParser());
     if (rootURL && rootURL !== '/') {
       const rootWithoutSlash = rootURL.slice(0, -1);
       app.get(rootWithoutSlash, (req, res, next) => {
@@ -32,6 +34,19 @@ const serverSettings = {
         return next();
       });
     }
+
+    // For index page
+    app.get('/', (req, res, next) => {
+      const auth = JSON.parse(req.cookies['ember_simple_auth-session']);
+
+      // If user is not logged in, redirect to sk-public
+      if (!auth || !auth.authenticated || !auth.authenticated.account_id) {
+        return res.redirect(302, rootURL);
+      }
+
+      // Serve smartkarma-web
+      return res.sendFile(indexFile, err => (err && next(err)));
+    });
   },
 
   afterMiddleware: (app) => {
