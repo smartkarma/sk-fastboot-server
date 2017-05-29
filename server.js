@@ -37,7 +37,8 @@ const serverSettings = {
 
     // For index page
     app.get('/', (req, res, next) => {
-      const auth = JSON.parse(req.cookies['ember_simple_auth-session']);
+      const cookie = req.cookies['ember_simple_auth-session'];
+      const auth = cookie && (typeof cookie === 'string') && JSON.parse(cookie);
 
       // If user is not logged in, redirect to sk-public
       if (!auth || !auth.authenticated || !auth.authenticated.account_id) {
