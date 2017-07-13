@@ -9,7 +9,7 @@ You will need the following things properly installed on your computer.
 
 * [Git](https://git-scm.com/)
 * [NVM](https://github.com/creationix/nvm) recommended to install Node
-* [Node.js](https://nodejs.org/) v6.x (or above)
+* [Node.js](https://nodejs.org/) v6.11.1 (or above)
 * [Yarn](https://yarnpkg.com/en/)
 
 ## Installation

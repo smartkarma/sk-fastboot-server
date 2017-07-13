@@ -29,7 +29,7 @@
     "uuid": "^3.0.1"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 6.11.1"
   },
   "private": true,
   "devDependencies": {
