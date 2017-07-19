@@ -35,6 +35,11 @@ const serverSettings = {
       });
     }
 
+    app.get(/\/home\/*/, (req, res, next) => {
+      res.header('Cache-Control', 'public, max-age=2592000');
+      next();
+    });
+
     // For index page
     app.get('/', (req, res, next) => {
       const cookie = req.cookies['ember_simple_auth-session'];
