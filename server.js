@@ -18,6 +18,32 @@ const indexFile = path.join(staticDistPath, 'index.html');
 
 const notifier = new WebhookNotifier();
 
+// Add create Ember Simple Auth cookie
+function safeJsonParse(json) {
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+}
+
+function addCookie(req, res, next) {
+  const hasSilentHeaders = Boolean(req.headers && req.headers['silent-auth']);
+  const authData = hasSilentHeaders && safeJsonParse(req.headers['silent-auth']);
+  if (authData) {
+    const data = JSON.stringify({
+      authenticated: {
+        account_id: authData.account_id,
+        authenticator: 'authenticator:devise',
+        email: authData.email,
+        token: authData.token,
+      },
+    });
+    res.cookie('ember_simple_auth-session', data, { maxAge: 2592000 });
+  }
+  next();
+}
+
 const serverSettings = {
   rootURL,
   notifier,
@@ -25,6 +51,9 @@ const serverSettings = {
 
   beforeMiddleware: (app) => {
     app.use(cookieParser());
+    // try to add auth cookie if Silent-Auth headers are set
+    app.use(addCookie);
+    // root URL without slash
     if (rootURL && rootURL !== '/') {
       const rootWithoutSlash = rootURL.slice(0, -1);
       app.get(rootWithoutSlash, (req, res, next) => {
@@ -51,6 +80,7 @@ const serverSettings = {
       }
 
       // Serve smartkarma-web
+      setAuthCookie();
       return res.sendFile(indexFile, err => (err && next(err)));
     });
   },
