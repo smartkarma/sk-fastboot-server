@@ -80,7 +80,6 @@ const serverSettings = {
       }
 
       // Serve smartkarma-web
-      setAuthCookie();
       return res.sendFile(indexFile, err => (err && next(err)));
     });
   },
