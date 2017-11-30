@@ -17,6 +17,7 @@ const staticDistPath = process.env.STATIC_DIST;
 const indexFile = path.join(staticDistPath, 'index.html');
 
 const notifier = new WebhookNotifier();
+let isHeaderAuth = false; // indication of silent-auth headers
 
 function safeJsonParse(json) {
   try {
@@ -31,6 +32,7 @@ function addCookie(req, res, next) {
   const hasSilentHeaders = Boolean(req.headers && req.headers['silent-auth']);
   const authData = hasSilentHeaders && safeJsonParse(req.headers['silent-auth']);
   if (authData) {
+    isHeaderAuth = true;
     const data = JSON.stringify({
       authenticated: {
         account_id: authData.account_id,
@@ -40,6 +42,8 @@ function addCookie(req, res, next) {
       },
     });
     res.cookie('ember_simple_auth-session', data, { maxAge: 2592000 });
+  } else {
+    isHeaderAuth = false;
   }
   next();
 }
@@ -72,15 +76,15 @@ const serverSettings = {
     // For index page
     app.get('/', (req, res, next) => {
       const cookie = req.cookies['ember_simple_auth-session'];
-      const auth = cookie && (typeof cookie === 'string') && JSON.parse(cookie);
+      const auth = cookie && typeof cookie === 'string' && JSON.parse(cookie);
 
       // If user is not logged in, redirect to sk-public
-      if (!auth || !auth.authenticated || !auth.authenticated.account_id) {
+      if ((!auth || !auth.authenticated || !auth.authenticated.account_id) && !isHeaderAuth) {
         return res.redirect(302, rootURL);
       }
 
       // Serve smartkarma-web
-      return res.sendFile(indexFile, err => (err && next(err)));
+      return res.sendFile(indexFile, err => err && next(err));
     });
   },
 
@@ -88,7 +92,7 @@ const serverSettings = {
     app.post(deployHookURL, notifier.hook);
     app.use(express.static(staticDistPath));
     app.use('*', (req, res, next) => {
-      res.sendFile(indexFile, err => (err && next(err)));
+      res.sendFile(indexFile, err => err && next(err));
     });
   },
 };
