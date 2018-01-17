@@ -18,11 +18,11 @@ You will need the following things properly installed on your computer.
 * `cd sk-fastboot-server`
 * Copy `.env.example` to `.env` and provide correct values for your setup
 * `nvm use` if you need to switch Node version
-* `yarn install`
+* `yarn`
 
 ## Running / Development
 
-* `node server.js` or `yarn run start`
+* `node server.js` or `yarn start`
 * The server will download latest distribution from your `PACKAGE_URL` config and extract it on your `DEST_PATH` folder
 * Test your server at [http://localhost:3000](http://localhost:3000). Change the port according to your config.
 
@@ -30,3 +30,8 @@ You will need the following things properly installed on your computer.
 
 * `yarn run lint`
 * This will check `server.js` and the files in `lib` folder
+
+### Restarting Server for Staging
+
+* ssh to nimbus server and `cd sk-fatboot-staging`
+* `sudo service node_daemon_staging restart`

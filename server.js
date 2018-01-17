@@ -57,6 +57,15 @@ const serverSettings = {
     app.use(cookieParser());
     // try to add auth cookie if Silent-Auth headers are set
     app.use(addCookie);
+
+    // for symphony app
+    app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('X-XSS-Protection', 1);
+      res.header('Strict-Transport-Security', 'max-age=8640');
+      next();
+    });
+
     // root URL without slash
     if (rootURL && rootURL !== '/') {
       const rootWithoutSlash = rootURL.slice(0, -1);
