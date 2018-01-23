@@ -60,9 +60,14 @@ const serverSettings = {
 
     // for symphony app
     app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('X-XSS-Protection', 1);
-      res.header('Strict-Transport-Security', 'max-age=8640');
+      res.header({
+        'X-XSS-Protection': 1,
+        'Access-Control-Allow-Origin': 'symphony.com',
+        // hsts settings
+        'Strict-Transport-Security': 'max-age=31536000', // 1 year
+        includeSubdomains: true,
+        preload: true,
+      });
       next();
     });
 
