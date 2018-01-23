@@ -34,4 +34,11 @@ You will need the following things properly installed on your computer.
 ### Restarting Server for Staging
 
 * ssh to nimbus server and `cd sk-fatboot-staging`
+* run
+  ```ssh
+    eval `ssh-agent -s`
+    ssh-add ~/.ssh/sk-github
+  ```
+  to get github access
+* pull the latest code u want
 * `sudo service node_daemon_staging restart`
